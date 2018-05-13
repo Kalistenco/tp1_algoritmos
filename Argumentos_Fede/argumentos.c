@@ -49,8 +49,11 @@ bool_t argumentos_error_imprimir(status_arg_t estado){
             case ERROR_NOMBRE_ENTRADA_NO_ESPECIFICADO:
                 fprintf(stderr , "%s : %s" ,MSJ_ERROR ,MSJ_ARG_NOMBRE_ENTRADA);
                 break;
-            case ERROR_NOMBRE_ENTRADA_EXTENSION:
-                fprintf(stderr , "%s : %s ", MSJ_ERROR , MSJ_ARG_NOMBRE_ENTRADA_EXTENSION);
+            case ERROR_NOMBRE_ENTRADA_EXTENSION_TXT:
+                fprintf(stderr , "%s : %s ", MSJ_ERROR , MSJ_ARG_NOMBRE_ENTRADA_EXTENSION_TXT);
+                break;
+            case ERROR_NOMBRE_ENTRADA_EXTENSION_BIN:
+                fprintf(stderr , "%s : %s",MSJ_ERROR ,MSJ_ARG_NOMBRE_ENTRADA_EXTENSION_BIN);
                 break;
 
             /*Mensaje de error relacionados con entrada/salida 2
@@ -142,12 +145,12 @@ status_arg_t validar_argumentos(int argc_cantidad , char * argv_lista[] , struct
             }
 
             /*Si  es 0 , significa que no se ingreso un numero , y si se ingreso un numero y es menor o igual a 0 , devuelve error */
-            else if (atoi(argv_lista[i + 1]) == 0 || atoi(argv_lista[i + 1]) < 0 ){
+            else if (strtol(argv_lista[i + 1], NULL , 10) <= 0){
                 return ERROR_MEMORIA_INV;
             }
 
             else{
-                mandar->cant_memoria = atoi(argv_lista[i + 1]);
+                mandar->cant_memoria = strtol(argv_lista[i + 1],NULL ,10);
                 i++;
             }
         }
@@ -158,11 +161,6 @@ status_arg_t validar_argumentos(int argc_cantidad , char * argv_lista[] , struct
             /*Si encuentra que la palabra siguiente a -i es otro argumento o es el ultimo elemento de la lista , devuelve error
             porque faltaria el nombre del archivo , sino, copia el nombre al mensajero */
             if( (i +1) != argc_cantidad  && validar_no_argumento(argv_lista , i ) == VERDADERO){
-
-                /*Si la extension del archivo de entrada no es LMS , devuelve error */
-                if(strstr(argv_lista[i + 1] , ARCHIVO_ENTRADA_EXTENSION) == NULL){
-                    return ERROR_NOMBRE_ENTRADA_EXTENSION;
-                }
 
                 strcpy(mandar->entrada_archivo_nombre , argv_lista[i + 1]);
                 mandar->entrada_archivo = VERDADERO;
@@ -241,6 +239,7 @@ status_arg_t validar_argumentos(int argc_cantidad , char * argv_lista[] , struct
 
     /*Manda error en caso de que se haya subido el nombre del achivo pero no el tipo
      Y en caso de que se haya subido el tipo del archivo pero no el nombre */
+    
     if(mandar->entrada_archivo == VERDADERO && mandar->entrada_tipo == NO_ESPECIFICADO){
         return ERROR_TIPO_ENTRADA_NO_ESPECIFICADO2;
     }
@@ -255,6 +254,18 @@ status_arg_t validar_argumentos(int argc_cantidad , char * argv_lista[] , struct
         return ERROR_NOMBRE_SALIDA_NO_ESPECIFICADO2;
     }
 
+
+    /*Validaciones de que el tipo de archivo de entrada coincida 
+    Si el tipo de entrada del archivo es txt espera que sea  .lms
+    Si el tipo de entrada del archivo es bin espera que sea .bin */
+
+    if((mandar->entrada_tipo == TXT )&& (strstr(mandar->entrada_archivo_nombre ,ARCHIVO_ENTRADA_EXTENSION_TXT) == NULL)){
+        return ERROR_NOMBRE_ENTRADA_EXTENSION_TXT;
+    }
+    else if(mandar->entrada_tipo == BIN && strstr(mandar->entrada_archivo_nombre , ARCHIVO_ENTRADA_EXTENSION_BIN ) == NULL){
+        return ERROR_NOMBRE_ENTRADA_EXTENSION_BIN;
+    }
+    
     /* Si todas las validaciones salen sin error, devuelve OK */
     return OK;
 }

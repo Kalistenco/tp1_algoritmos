@@ -13,7 +13,9 @@
 #define MSJ_ARG_TIPO_ENTRADA " -if :  No se especificto tipo de archivo de entrada"
 #define MSJ_ARG_TIPO_ENTRADA_INV "-if : Invalido valor de tipo de archivo de entrada"
 #define MSJ_ARG_NOMBRE_ENTRADA "-i : No se especifico nombre del archivo de entrada"
-#define MSJ_ARG_NOMBRE_ENTRADA_EXTENSION "-i : El archivo de entrada debe ser .lms"
+#define MSJ_ARG_NOMBRE_ENTRADA_EXTENSION_TXT "-i : El archivo de entrada debe ser .lms"
+#define MSJ_ARG_NOMBRE_ENTRADA_EXTENSION_BIN "-i : EL archivo de entrada debe ser .bin"
+
 #define MSJ_ARG_TIPO_SALIDA " -of : No se especifico tipo de archivo de salida"
 #define MSJ_ARG_TIPO_SALIDA_INV "-of : Invalido valor del tipo de archivo de salida"
 #define MSJ_ARG_NOMBRE_SALIDA " -o : No se especifico el nombre del archivo de salida"
@@ -32,11 +34,12 @@
 #define MSJ_ARG_MUCHOS " se han ingresado mas argumentos de lo permitido"
 #define MSJ_ARG_INV " se ha ingresado un argumento invalido"
 
-
+/*Cantidad maxima de argumentos */
 #define MAX_ARG 12
 
-
-#define ARCHIVO_ENTRADA_EXTENSION ".lms"
+/*Extension de los archivos de entrada esperados */
+#define ARCHIVO_ENTRADA_EXTENSION_TXT ".lms"
+#define ARCHIVO_ENTRADA_EXTENSION_BIN ".bin"
 
 /*Valores DEFAULT del mensajero */
 #define NOMBRE_DEFAULT " "
@@ -69,7 +72,8 @@ typedef enum status_arg {
     ERROR_TIPO_ENTRADA_NO_ESPECIFICADO,
     ERROR_TIPO_ENTRADA_INV,
     ERROR_NOMBRE_ENTRADA_NO_ESPECIFICADO,
-    ERROR_NOMBRE_ENTRADA_EXTENSION,
+    ERROR_NOMBRE_ENTRADA_EXTENSION_TXT,
+    ERROR_NOMBRE_ENTRADA_EXTENSION_BIN,
     ERROR_TIPO_SALIDA_NO_ESPECIFICADO2,
     ERROR_NOMBRE_SALIDA_NO_ESPECIFICADO2,
     ERROR_TIPO_ENTRADA_NO_ESPECIFICADO2,
