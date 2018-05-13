@@ -5,6 +5,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/*Maximo del largo del nombre del archivo */
+#define MAX_LARGO_ARCHIVO 50
+
+/*Cantidad de tipos en diccionario */
+#define OPCIONES_TIPO_ARCHIVO 2
+
 typedef struct palabras{
     int completo;
     size_t codigo;
@@ -22,6 +28,15 @@ struct procesador{
     size_t index;
     palabras_t ** lista_instrucciones;
 };
+
+/*Diccionario de tipos de archivos */
+/*OPCIONES_TIPO_ARCHIVO = Cantidad de opciones, si se modifica biblioteca, modificar cantidad */
+static const char * const archivos_tipo_lista[] = {"txt" , "bin"};
+typedef enum archivos_index {
+    NO_ESPECIFICADO = -1,
+    TXT = 0,
+    BIN = 1
+}archivo_t;
 
 /*Estructura de mensajero para conectar las validaciones con la ejecucion de argumentos */
 struct mensajero{

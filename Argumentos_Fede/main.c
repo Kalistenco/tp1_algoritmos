@@ -31,6 +31,6 @@ void imprimir_mensajero(struct mensajero * y){
     printf("\nSalida archivo : %i\n",y->salida_archivo);
     printf("Salida archivo nombre : %s \n",y->salida_archivo_nombre);
     printf("Salida Tipo archivo : %i\n",y->salida_tipo);
-    printf("\n Cantidad de memoria %i\n",(int) (y->cant_memoria));
+    printf("\nCantidad de memoria %i\n",(int) (y->cant_memoria));
     printf("\n----------------------------\n");
 }

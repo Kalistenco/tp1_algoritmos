@@ -49,8 +49,13 @@ bool_t argumentos_error_imprimir(status_arg_t estado){
             case ERROR_NOMBRE_ENTRADA_NO_ESPECIFICADO:
                 fprintf(stderr , "%s : %s" ,MSJ_ERROR ,MSJ_ARG_NOMBRE_ENTRADA);
                 break;
+            case ERROR_NOMBRE_ENTRADA_EXTENSION:
+                fprintf(stderr , "%s : %s ", MSJ_ERROR , MSJ_ARG_NOMBRE_ENTRADA_EXTENSION);
+                break;
 
-            /*Mensaje de error relacionados con entrada/salida 2*/
+            /*Mensaje de error relacionados con entrada/salida 2
+            Todos los mensajes relacionados con que falta especificar tipo u nombre de archivo
+            tendiendo ya uno de los dos especificados */
             case ERROR_TIPO_SALIDA_NO_ESPECIFICADO2:
                 fprintf(stderr , "%s : %s", MSJ_ERROR ,MSJ_ARG_TIPO_SALIDA2);
                 break;
@@ -149,10 +154,16 @@ status_arg_t validar_argumentos(int argc_cantidad , char * argv_lista[] , struct
 
         /*En caso de que se use el argumento -i y sus validaciones */
         else if(strcmp( argv_lista[i], argumentos_lista[I]) == 0){
-            |
+            
             /*Si encuentra que la palabra siguiente a -i es otro argumento o es el ultimo elemento de la lista , devuelve error
             porque faltaria el nombre del archivo , sino, copia el nombre al mensajero */
             if( (i +1) != argc_cantidad  && validar_no_argumento(argv_lista , i ) == VERDADERO){
+
+                /*Si la extension del archivo de entrada no es LMS , devuelve error */
+                if(strstr(argv_lista[i + 1] , ARCHIVO_ENTRADA_EXTENSION) == NULL){
+                    return ERROR_NOMBRE_ENTRADA_EXTENSION;
+                }
+
                 strcpy(mandar->entrada_archivo_nombre , argv_lista[i + 1]);
                 mandar->entrada_archivo = VERDADERO;
                 i++;
