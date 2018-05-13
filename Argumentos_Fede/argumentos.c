@@ -24,8 +24,11 @@ void inicializar_mensajero(struct mensajero * msj){
     msj->cant_memoria = CANTIDAD_MEMORIA_DEFAULT;
 }
 
+/*Si hubo un error retoran verdadero e imprime mensaje, sino retorna falso y no imprime nada,
+ya que no hubo ningun error */
+
 bool_t argumentos_error_imprimir(status_arg_t estado){
-    if( estado != OK){
+
         switch(estado){
             /*Mensajes de error relacionados con entrada/salida 1 */
             case ERROR_TIPO_SALIDA_NO_ESPECIFICADO:
@@ -75,14 +78,14 @@ bool_t argumentos_error_imprimir(status_arg_t estado){
                 break;
             case ERROR_MEMORIA_INV:
                 fprintf(stderr , "%s : %s", MSJ_ERROR ,MSJ_ARG_MEMORIA_INV);
+
+            /*No hubo ningun error */
             case OK:
+                return FALSO;
                 break;
         }
-        return FALSO;
-    }
-    else{
+
         return VERDADERO;
-    }
 }
 
 /*Funcion que valida el que el nombre siguiente no sea un argumento */
@@ -146,7 +149,7 @@ status_arg_t validar_argumentos(int argc_cantidad , char * argv_lista[] , struct
 
         /*En caso de que se use el argumento -i y sus validaciones */
         else if(strcmp( argv_lista[i], argumentos_lista[I]) == 0){
-            
+            |
             /*Si encuentra que la palabra siguiente a -i es otro argumento o es el ultimo elemento de la lista , devuelve error
             porque faltaria el nombre del archivo , sino, copia el nombre al mensajero */
             if( (i +1) != argc_cantidad  && validar_no_argumento(argv_lista , i ) == VERDADERO){
@@ -166,6 +169,7 @@ status_arg_t validar_argumentos(int argc_cantidad , char * argv_lista[] , struct
             Si encuentra una cadena distina a un argumento , valida si esa cadena es un txt o bin
             Si no es txt ni bin , retorna error, sino, guarda en el mensajero la informacion */
 
+            /*Si es el ultimo o si el siguiente es un argumento, retorna error */
             if((i + 1) == argc_cantidad || validar_no_argumento(argv_lista , i) == FALSO){
                 return ERROR_TIPO_ENTRADA_NO_ESPECIFICADO;
             }

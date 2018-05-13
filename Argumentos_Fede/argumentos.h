@@ -87,17 +87,6 @@ typedef enum archivos_index {
     BIN = 1
 }archivo_t;
 
-/*Estructura de mensajero para conectar las validaciones con la ejecucion de argumentos */
-struct mensajero{
-    bool_t opcion_ayuda;
-    bool_t entrada_archivo;
-    char entrada_archivo_nombre[MAX_LARGO_ARCHIVO];
-    archivo_t entrada_tipo;
-    bool_t salida_archivo;
-    char salida_archivo_nombre[MAX_LARGO_ARCHIVO];
-    archivo_t salida_tipo;
-    size_t cant_memoria;
-};
 
 void inicializar_mensajero(struct mensajero * x);
 
@@ -109,4 +98,4 @@ bool_t validar_no_argumento(char * argv_lista[], int posicion );
 bool_t validar_tipo_archivo(char * argv_lista[] , int posicion , size_t * contador);
 status_arg_t validar_argumentos(int argc_cantidad , char * argv_lista[], struct mensajero * mandar);
 
-#endif
+#endifq
