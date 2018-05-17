@@ -49,12 +49,6 @@ bool_t argumentos_error_imprimir(status_arg_t estado){
             case ERROR_NOMBRE_ENTRADA_NO_ESPECIFICADO:
                 fprintf(stderr , "%s : %s" ,MSJ_ERROR ,MSJ_ARG_NOMBRE_ENTRADA);
                 break;
-            case ERROR_NOMBRE_ENTRADA_EXTENSION_TXT:
-                fprintf(stderr , "%s : %s ", MSJ_ERROR , MSJ_ARG_NOMBRE_ENTRADA_EXTENSION_TXT);
-                break;
-            case ERROR_NOMBRE_ENTRADA_EXTENSION_BIN:
-                fprintf(stderr , "%s : %s",MSJ_ERROR ,MSJ_ARG_NOMBRE_ENTRADA_EXTENSION_BIN);
-                break;
 
             /*Mensaje de error relacionados con entrada/salida 2
             Todos los mensajes relacionados con que falta especificar tipo u nombre de archivo
@@ -252,18 +246,6 @@ status_arg_t validar_argumentos(int argc_cantidad , char * argv_lista[] , struct
     }
     else if(mandar->salida_archivo == FALSO && mandar->salida_tipo != NO_ESPECIFICADO){
         return ERROR_NOMBRE_SALIDA_NO_ESPECIFICADO2;
-    }
-
-
-    /*Validaciones de que el tipo de archivo de entrada coincida 
-    Si el tipo de entrada del archivo es txt espera que sea  .lms
-    Si el tipo de entrada del archivo es bin espera que sea .bin */
-
-    if((mandar->entrada_tipo == TXT )&& (strstr(mandar->entrada_archivo_nombre ,ARCHIVO_ENTRADA_EXTENSION_TXT) == NULL)){
-        return ERROR_NOMBRE_ENTRADA_EXTENSION_TXT;
-    }
-    else if(mandar->entrada_tipo == BIN && strstr(mandar->entrada_archivo_nombre , ARCHIVO_ENTRADA_EXTENSION_BIN ) == NULL){
-        return ERROR_NOMBRE_ENTRADA_EXTENSION_BIN;
     }
     
     /* Si todas las validaciones salen sin error, devuelve OK */

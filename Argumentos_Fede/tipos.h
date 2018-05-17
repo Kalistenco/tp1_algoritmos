@@ -20,11 +20,6 @@ typedef enum archivos_index {
     BIN = 1
 }archivo_t;
 
-typedef struct palabras{
-    int completo;
-    size_t codigo;
-    size_t direccion; 
-}palabras_t;
 
 typedef enum BOOLEAN{
     FALSO,
@@ -35,7 +30,7 @@ typedef enum BOOLEAN{
 struct procesador{
     int acumulador;
     size_t index;
-    palabras_t ** lista_instrucciones;
+    int * lista_instrucciones;
 };
 
 

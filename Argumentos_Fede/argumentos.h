@@ -13,8 +13,7 @@
 #define MSJ_ARG_TIPO_ENTRADA " -if :  No se especificto tipo de archivo de entrada"
 #define MSJ_ARG_TIPO_ENTRADA_INV "-if : Invalido valor de tipo de archivo de entrada"
 #define MSJ_ARG_NOMBRE_ENTRADA "-i : No se especifico nombre del archivo de entrada"
-#define MSJ_ARG_NOMBRE_ENTRADA_EXTENSION_TXT "-i : El archivo de entrada debe ser .lms"
-#define MSJ_ARG_NOMBRE_ENTRADA_EXTENSION_BIN "-i : EL archivo de entrada debe ser .bin"
+
 
 #define MSJ_ARG_TIPO_SALIDA " -of : No se especifico tipo de archivo de salida"
 #define MSJ_ARG_TIPO_SALIDA_INV "-of : Invalido valor del tipo de archivo de salida"
@@ -72,8 +71,6 @@ typedef enum status_arg {
     ERROR_TIPO_ENTRADA_NO_ESPECIFICADO,
     ERROR_TIPO_ENTRADA_INV,
     ERROR_NOMBRE_ENTRADA_NO_ESPECIFICADO,
-    ERROR_NOMBRE_ENTRADA_EXTENSION_TXT,
-    ERROR_NOMBRE_ENTRADA_EXTENSION_BIN,
     ERROR_TIPO_SALIDA_NO_ESPECIFICADO2,
     ERROR_NOMBRE_SALIDA_NO_ESPECIFICADO2,
     ERROR_TIPO_ENTRADA_NO_ESPECIFICADO2,
