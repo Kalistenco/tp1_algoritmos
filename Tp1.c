@@ -86,8 +86,8 @@ int main( int argc , char * argv[] ){
 		}
 		else if( argumento == ARG_I || argumento == ARG_O ){
 /*si aparecen estos argumentos , solo puede ser de la forma */
-/*-if archivo , -of archivo  y si no aparece -if o -of se considera error */
-/*por que no hay valores por omision*/
+/*-i archivo , -o archivo , asi que si aparece se carga */
+/*creo que no hay forma de validar que el archivo sea correcto*/
 			estado = cargar_parametro_i_o( &parametro_argumentos , argumento ,
 										   argv[var_conteo] );
 			if( estado != ST_OK){
