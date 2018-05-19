@@ -29,11 +29,15 @@ int main( int argc , char * argv[] ){
 
 	parametro_argumentos.imprimir_ayuda = FALSO;
 	parametro_argumentos.N= 50 ;
+/*de donde lee y donde imprime*/
 	parametro_argumentos.frmt_lectura = STDIO;
 	parametro_argumentos.frmt_volcado = STDIO;
-	parametro_argumentos.frmt_entrada = FRMT_TXT;
-	parametro_argumentos.frmt_salida = FRMT_BIN;
+/*el formato en que lee y el formato en que entrega la informacion*/
+	parametro_argumentos.frmt_entrada = FRMT_INCORRECTO;
+	parametro_argumentos.frmt_salida = FRMT_INCORRECTO;
 
+/*se inicializa estado a ST_OK , es para cuando no entre al ciclo (./programa) */
+	estado = ST_OK;
 	while( var_conteo < argc - 1 ){
 /*el programa empieza a trabakar con argv[1]*/
 /*recordar que argv[0] es ./programa*/
@@ -41,63 +45,78 @@ int main( int argc , char * argv[] ){
 /*valida que argv[1] sea un argumento valido*/
 		estado = validar_argumento( argv[var_conteo] , &argumento , &diccionario);
 		if( estado != ST_OK){
-			imprimir_error(estado);
-			return EXIT_FAILURE;
+			break;
 		}
 /*si el argumento fuera -h imprime la ayuda y sale no tiene que hacer nada mas*/
 		if( argumento == ARG_H ){
-			imprimir_ayuda();
-			return EXIT_SUCCESS;
+			parametro_argumentos.imprimir_ayuda = VERDADERO;
+			break;
 		}
 		var_conteo++;
+/*si lo que lee es lo ultimo del argv (NULL) es por que ingreso un argumento*/
+/*sin parametro*/
+		if( var_conteo == argc ){
+			estado = ST_ERROR_ARG_SIN_PARAMETRO;
+			break;
+		}
 /*hasta aca se que argv[1] es un argumento valido y no es -h*/
 /*entonces el siguiente no tiene que ser un argumento */
 /*seria el ejemplo -if -o es un error , si se pone -if se tiene que agregar*/
-/*un parametro*/
+/*un parametro de -if (bin , txt)*/
 		estado = validar_argumento( argv[var_conteo] , &argumento_aux , &diccionario);
-		if( estado != ST_ARGUMENTO_INVALIDO ){
-/*estado puede ser ST_OK que es contradictorio terminar cuando tenemos ese estado*/
-/*si se pasa este estado a la funcion imprimir_error */
-/*es por que hubo un argumento donde iva un parametro*/
-			imprimir_error(estado);
-			return EXIT_FAILURE;
+		if( estado != ST_ERROR_ARG_INVALIDO ){
+			if( estado == ST_ERROR_PUNTERO_NULO ){
+				break;
+			}
+			else{
+/*el unico caso que queda es ST_OK que significa que es un argumento*/
+				estado = ST_ERROR_ARG_ARG;
+				break;
+			}
 		}
 		if( argumento == ARG_IF || argumento == ARG_OF ){
 			estado = validar_frmt_if_of( argv[var_conteo] , &frmt_if_of , &diccionario);
 			if( estado != ST_OK ){
-				imprimir_error(estado);
-				return EXIT_FAILURE;
+				break;
 			}
 			estado = cargar_frmt_if_of( frmt_if_of , &parametro_argumentos , argumento);
 			if( estado != ST_OK ){
-				imprimir_error(estado);
-				return EXIT_FAILURE;
+				break;
 			}
 		}
 		else if( argumento == ARG_I || argumento == ARG_O ){
 /*si aparecen estos argumentos , solo puede ser de la forma */
-/*-if archivo , -of archivo  y si no aparece -if o -of se toman los valores por*/
-/*omision , -if -of es invalido*/
-			if( argumento == ARG_I ){
-				parametro_argumentos.frmt_lectura = ARCHIVO;
-			}
-			else{
-				parametro_argumentos.frmt_volcado = ARCHIVO;
+/*-if archivo , -of archivo  y si no aparece -if o -of se considera error */
+/*por que no hay valores por omision*/
+			estado = cargar_parametro_i_o( &parametro_argumentos , argumento ,
+										   argv[var_conteo] );
+			if( estado != ST_OK){
+				break;
 			}
 		}
 
 		else if( argumento == ARG_M ){
 			estado = validar_cant_palabras( argv[var_conteo] , &Na );
 			if( estado != ST_OK ){
-				imprimir_error(estado);
-				return EXIT_FAILURE;
+				break;
 			}
 /*en este punto se que el parametro de -m es correcto entonces se carga */
 			parametro_argumentos.N = Na ;
 		}
 		else{
-			return EXIT_FAILURE;
+			estado = ST_ERROR_ARG_INVALIDO;
+			break;
 		}
+	}
+/*se supone que tien que igresar un formato de entrada y salida por que no hay*/
+/* valores por omision*/
+	if( parametro_argumentos.frmt_entrada == FRMT_INCORRECTO ||
+		parametro_argumentos.frmt_salida == FRMT_INCORRECTO ){
+		estado = ST_ERROR_FRMT_INDEFINIDO;
+	}
+	if( estado != ST_OK ){
+		imprimir_error(estado);
+		return EXIT_FAILURE;
 	}
 	return ST_OK;
 }

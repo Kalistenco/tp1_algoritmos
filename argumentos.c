@@ -10,7 +10,7 @@ status_t validar_cant_palabras( char * arg , long * cant_palabras ){
 	char * ptr_aux;
 
 	if( !arg || !cant_palabras ){
-		return ST_PUNTERO_NULO;
+		return ST_ERROR_PUNTERO_NULO;
 	}
 	*cant_palabras = 0;
 	if( !(cant_palabras_aux = strtol( arg , &ptr_aux , 10 )) ){
@@ -37,7 +37,7 @@ status_t validar_argumento( char * arg_recibido ,
 	argumentos_t argumento_aux;
 
 	if( !arg_recibido  || !argumento || !ptr_diccionario ){
-		return ST_PUNTERO_NULO;
+		return ST_ERROR_PUNTERO_NULO;
 	}
 /*esta parte es para independizarse de los argumentos como cadenas */
 /*y comenzar a trabajar solo con las constantes simbolicas (ARG_H , ARG_M ...)*/
@@ -72,7 +72,7 @@ status_t validar_argumento( char * arg_recibido ,
 	}
 	*argumento = argumento_aux;
 	if( argumento_aux == ARG_INVALIDO ){
-	return ST_ARGUMENTO_INVALIDO;
+	return ST_ERROR_ARG_INVALIDO;
 	}
 	return ST_OK;
 }
@@ -86,7 +86,7 @@ status_t validar_frmt_if_of( char * arg_recibido ,
 	size_t var_conteo;
 
 	if( !arg_recibido || !frmt_if_of || !diccionario ){
-		return ST_PUNTERO_NULO;
+		return ST_ERROR_PUNTERO_NULO;
 	}
 
 	*frmt_if_of = FRMT_INCORRECTO;
@@ -108,7 +108,7 @@ status_t validar_frmt_if_of( char * arg_recibido ,
 	}
 	*frmt_if_of = frmt_if_of_aux;
 	if( frmt_if_of_aux == FRMT_INCORRECTO ){
-		return ST_FRMT_INCORRECTO;
+		return ST_ERROR_FRMT_INCORRECTO;
 	}
 	return ST_OK;
 }
@@ -119,13 +119,13 @@ status_t validar_frmt_if_of( char * arg_recibido ,
 void imprimir_error(status_t estado){
 
 	switch( estado ){
-		case ST_PUNTERO_NULO:
-			puts("Puntero Nulo");
+		case ST_ERROR_PUNTERO_NULO:
+			fprintf(stderr,"%s","Puntro nulo\n");
 			break;
-		case ST_ARGUMENTO_INVALIDO:
+		case ST_ERROR_ARG_INVALIDO:
 			puts("Argumento invalido");
 			break;
-		case ST_FRMT_INCORRECTO:
+		case ST_ERROR_FRMT_INCORRECTO:
 			puts("Formato incorrecto");
 			break;
 		case ST_ERROR_CANT_N:
@@ -134,8 +134,20 @@ void imprimir_error(status_t estado){
 		case ST_ERROR_N_INGRESADO:
 			puts("Error en el N ingresado");
 			break;
-		case ST_OK:
-			puts("Termino por que se encontro un argumento donde iva un aprametro");
+		case ST_ERROR_ARG_SIN_PARAMETRO:
+			puts("Ingreso un argumento sin su parametro");
+			break;
+		case ST_ERROR_ARG_ARG:
+			puts("Ingreso un argumento despues de otro argumento");
+			break;
+		case ST_ERROR_PARAMETRO_I_O:
+			puts("Error parametro de -i o -o no es valido");
+			break;
+		case ST_ERROR_LONG_ARCHIVO:
+			puts("Error en la longitud del archivo ingresado");
+			break;
+		case ST_ERROR_FRMT_INDEFINIDO:
+			puts("Error debe definir el formato ( si se lee en binario o texto) ");
 			break;
 		default:
 			puts("Error");
@@ -150,19 +162,53 @@ status_t cargar_frmt_if_of( frmt_if_of_t frmt_if_of ,
 							argumentos_t argumento ){
 
 	if( !parametro_argumentos ){
-		return ST_PUNTERO_NULO;
+		return ST_ERROR_PUNTERO_NULO;
 	}
-	if( argumento == ARG_IF ){
-		switch( frmt_if_of ){
-			case FRMT_BIN:
-				parametro_argumentos -> frmt_entrada = FRMT_BIN;
-				break;
-			case FRMT_TXT:
-				break;
-			default:
-				parametro_argumentos -> frmt_entrada = FRMT_INCORRECTO;
-				return ST_FRMT_INCORRECTO;
-		}
+/*frmt_if_of puede ser FRMT_BIN , FRMT_TXT o FRMT_INCORRECTO*/
+/*se guarda (no se cual de esos es) y se validara fuera de esta funcion*/
+	switch( argumento ){
+		case ARG_IF:
+			parametro_argumentos -> frmt_entrada = frmt_if_of;
+			break;
+		case ARG_OF:
+			parametro_argumentos -> frmt_salida = frmt_if_of;
+			break;
+		default:
+			return ST_ERROR_ARG_INVALIDO;
+	}
+	return ST_OK;
+}
+
+status_t cargar_parametro_i_o( parametro_argumentos_t * parametro_argumentos ,
+							   argumentos_t argumento ,
+							   char archivo[] ){
+/*utilizo un verctor auxiliar para no usar 2 veces strncpy */
+	size_t longitud_archivo;
+
+	if( !parametro_argumentos || !archivo ){
+		return ST_ERROR_PUNTERO_NULO;
+	}
+/*MAX_LAR... es la cantidad de caracteres utilies (no cuenta el \0)*/
+/* a lo mucho puede ser igual a la MAX_.... ( los caracteres utiles )*/
+	if( (longitud_archivo = strlen(archivo)) > MAX_LARGO_ARCHIVO ||
+		!longitud_archivo ){
+		return ST_ERROR_LONG_ARCHIVO;
+	}
+/*se pone el +1 para copiar el \0 */
+/*¿tendria que utilizar memoria dinamica?*/
+	switch( argumento ){
+		case ARG_I:
+			parametro_argumentos -> frmt_lectura = ARCHIVO;
+			strncpy( parametro_argumentos -> ptr_archivo_lectura
+					 , archivo , longitud_archivo + 1);
+			break;
+		case ARG_O:
+			parametro_argumentos -> frmt_volcado = ARCHIVO;
+			strncpy( parametro_argumentos -> ptr_archivo_volcado
+					 , archivo , longitud_archivo + 1);
+			break;
+		default:
+			return ST_ERROR_PARAMETRO_I_O;
 	}
 	return ST_OK;
 }
