@@ -7,7 +7,6 @@
 
 #include "tipos.h"
 
-#define MSJ_ERROR "Ha ocurrido un error  "
 
 /*Mensajes error entrada/salida 1 */
 #define MSJ_ARG_TIPO_ENTRADA " -if :  No se especificto tipo de archivo de entrada"

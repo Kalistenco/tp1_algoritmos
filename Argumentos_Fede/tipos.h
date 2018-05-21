@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/*Mensaje de error */
+#define MSJ_ERROR "Ha ocurrido un error  "
+
 /*Maximo del largo del nombre del archivo */
 #define MAX_LARGO_ARCHIVO 50
 
@@ -49,5 +52,6 @@ struct mensajero{
 
 
 extern struct procesador cabeza;
+struct procesador cabeza;
 
 #endif
