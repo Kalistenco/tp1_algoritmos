@@ -7,16 +7,20 @@
 
 #include "tipos.h"
 
+/*Mensaje de Inicio/FIn */
+#define MSJ_INICIO "*********INICIO DE EJECUCION DEL SIMPLETRON*********"
+#define MSJ_FINAL "*********FINAL DE EJECUCION DEL SIMPLETRON*********"
+
 /*Mensajes de entrada/salida*/
 #define MSJ_OPERACION_ESCRIBIR "Ingrese una palabra : "
 #define MSJ_OPERACION_LEER "Contenido de la posicion "
 
 
 /*Mensajes de error */
-#define MSJ_ERROR_OP_HALT "No se ha encontrado el final del programa"
+#define MSJ_ERROR_OP_HALT "No se ha encontrado el final del programa\n"
 #define MSJ_ERROR_OP_CODIGO_NO_CONOCIDO "No se ha introducido ninguna operacion valida en la memoria : "
 #define MSJ_ERROR_OP_POSICION_FUERA_DE_RANGO "Se apunta a una memoria invalida en la instruccion de posicion : "
-#define MSJ_ERROR_OP_VALOR_INGRESADO_INV "se ha ingresado un valor invalido"
+#define MSJ_ERROR_OP_VALOR_INGRESADO_INV "se ha ingresado un valor invalido\n"
 
 /*Operacions y su codigo */
 #define OPERACION_LEER 10

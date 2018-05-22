@@ -4,6 +4,7 @@
 
 #include "argumentos.h"
 #include "operacions.h"
+#include "salida.h"
 
 void imprimir_mensajero(struct  mensajero * y);
 
@@ -14,12 +15,10 @@ int main(int argc , char * argv[]){
 
     inicializar_mensajero(&msj);
 
-    imprimir_mensajero(&msj);
-
     error_argumento = validar_argumentos(argc , argv ,&msj);
-    argumentos_error_imprimir(error_argumento);
-
-    imprimir_mensajero(&msj);
+    if(argumentos_error_imprimir(error_argumento) == FALSO){
+        return 1;
+    }
 
     cabeza.lista_instrucciones = (int *) malloc(sizeof(int) * msj.cant_memoria);
 
@@ -41,7 +40,13 @@ int main(int argc , char * argv[]){
     cabeza.lista_instrucciones[11] = 0000;
 
     error_operacion = ejecutar_instrucciones(msj.cant_memoria);
-    errores_instrucciones(error_operacion);
+    if(errores_instrucciones(error_operacion) == FALSO){
+        return 1;
+    }
+
+    if(seleccionar_salida(&msj) == FALSO){
+        return 1;
+    }
 
     return 0;
 }

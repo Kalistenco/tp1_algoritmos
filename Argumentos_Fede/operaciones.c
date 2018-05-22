@@ -25,26 +25,29 @@ bool_t errores_instrucciones(status_op_t error){
             fprintf(stderr , "%s : %s" ,MSJ_ERROR , MSJ_ERROR_OP_HALT);
             break;
         case NINGUN_CODIGO_CONOCIDO:
-            fprintf(stderr , "%s : %s  %i" , MSJ_ERROR , MSJ_ERROR_OP_CODIGO_NO_CONOCIDO , (int) cabeza.index);
+            fprintf(stderr , "%s : %s  %i\n" , MSJ_ERROR , MSJ_ERROR_OP_CODIGO_NO_CONOCIDO , (int) cabeza.index);
             break;
         case POSICION_FUERA_DE_RANGO:
-            fprintf(stderr , "%s : %s %i ",MSJ_ERROR ,MSJ_ERROR_OP_POSICION_FUERA_DE_RANGO ,(int) cabeza.index);
+            fprintf(stderr , "%s : %s %i \n",MSJ_ERROR ,MSJ_ERROR_OP_POSICION_FUERA_DE_RANGO ,(int) cabeza.index);
             break;
         case VALOR_INGRESADO_INV:
             fprintf(stderr , "%s : %s" ,MSJ_ERROR ,MSJ_ERROR_OP_VALOR_INGRESADO_INV);
             break;
         case OK_OP:
-            return FALSO;
+            printf("%s \n",MSJ_FINAL);
+            return VERDADERO;
             break;
     }
 
-    return VERDADERO;
+    printf("%s \n",MSJ_FINAL);
+    return FALSO;
 }
 status_op_t ejecutar_instrucciones(int cantidad_memoria){
     status_op_t estado;
     int posicion_asignada;
     int codigo;
 
+    printf("%s \n", MSJ_INICIO);
     while(1){
 
     /*Si la operacion indica hacia memoria que esta fuera del rango, manda error */
@@ -55,7 +58,6 @@ status_op_t ejecutar_instrucciones(int cantidad_memoria){
     codigo = cabeza.lista_instrucciones[cabeza.index] / 100;
 
      
-    prueba(codigo, posicion_asignada);
 
         switch(codigo){
             /*Operaciones de entrada/salida */
@@ -132,7 +134,7 @@ status_op_t ejecutar_instrucciones(int cantidad_memoria){
                 break;
             
             default:
-                return NINGUN_CODIGO_CONOCIDO;
+                printf("%s \n",MSJ_FINAL);
                 break;
         }
 
@@ -147,28 +149,18 @@ status_op_t ejecutar_instrucciones(int cantidad_memoria){
 /*******************************************************************/
 
 status_op_t leer(int posicion_asignada){
-    char c;
     char * puntero;
-    char numero_ingresado[100];
-    size_t i = 0;
+    char numero_ingresado[20];
 
     /*Lectura */
     printf("%s",MSJ_OPERACION_ESCRIBIR);
-    while(1){
-        c = getchar();
-
-        if(c == '\n'){
-            break;
-        }
-        numero_ingresado[i] = c;
-        i++;
-    }
+    fgets(numero_ingresado , 20 , stdin);
 
     /*Si no ingresa numeros, devuelve error */
-    if((strtol(numero_ingresado,&puntero,10) == 0 && *puntero != '\0')){
+    if((strtol(numero_ingresado,&puntero,10) == 0 && *puntero != '\n')){
         return VALOR_INGRESADO_INV;
     }
-    else if(*puntero != '\0'){
+    else if(*puntero != '\n'){
         return VALOR_INGRESADO_INV;
     }   
     

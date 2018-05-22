@@ -24,7 +24,7 @@ void inicializar_mensajero(struct mensajero * msj){
     msj->cant_memoria = CANTIDAD_MEMORIA_DEFAULT;
 }
 
-/*Si hubo un error retoran verdadero e imprime mensaje, sino retorna falso y no imprime nada,
+/*Si hubo un error retoran FALSO e imprime mensaje, sino retorna VERDADERO y no imprime nada,
 ya que no hubo ningun error */
 
 bool_t argumentos_error_imprimir(status_arg_t estado){
@@ -83,11 +83,11 @@ bool_t argumentos_error_imprimir(status_arg_t estado){
 
             /*No hubo ningun error */
             case OK:
-                return FALSO;
+                return VERDADERO;
                 break;
         }
 
-        return VERDADERO;
+        return FALSO;
 }
 
 /*Funcion que valida el que el nombre siguiente no sea un argumento */

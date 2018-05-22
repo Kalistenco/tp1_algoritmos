@@ -9,28 +9,28 @@
 
 
 /*Mensajes error entrada/salida 1 */
-#define MSJ_ARG_TIPO_ENTRADA " -if :  No se especificto tipo de archivo de entrada"
-#define MSJ_ARG_TIPO_ENTRADA_INV "-if : Invalido valor de tipo de archivo de entrada"
-#define MSJ_ARG_NOMBRE_ENTRADA "-i : No se especifico nombre del archivo de entrada"
+#define MSJ_ARG_TIPO_ENTRADA " -if :  No se especificto tipo de archivo de entrada\n"
+#define MSJ_ARG_TIPO_ENTRADA_INV "-if : Invalido valor de tipo de archivo de entrada\n"
+#define MSJ_ARG_NOMBRE_ENTRADA "-i : No se especifico nombre del archivo de entrada\n"
 
 
-#define MSJ_ARG_TIPO_SALIDA " -of : No se especifico tipo de archivo de salida"
-#define MSJ_ARG_TIPO_SALIDA_INV "-of : Invalido valor del tipo de archivo de salida"
-#define MSJ_ARG_NOMBRE_SALIDA " -o : No se especifico el nombre del archivo de salida"
+#define MSJ_ARG_TIPO_SALIDA " -of : No se especifico tipo de archivo de salida\n"
+#define MSJ_ARG_TIPO_SALIDA_INV "-of : Invalido valor del tipo de archivo de salida\n"
+#define MSJ_ARG_NOMBRE_SALIDA " -o : No se especifico el nombre del archivo de salida\n"
 
 /*Mensajes error entrada/salida 2*/
-#define MSJ_ARG_TIPO_SALIDA2 "se especifico el nombre del archivo de salida, pero no su tipo con -of"
-#define MSJ_ARG_NOMBRE_SALIDA2 "se especifico el tipo del archivo de salida, pero no el nombre con -o"
-#define MSJ_ARG_TIPO_ENTRADA2 "se especifico el nombre del archivo de entrada, pero no su tipo con -if"
-#define MSJ_ARG_NOMBRE_ENTRADA2 "se especifico el tipo del archivo de entrada , pero no el nombre con -i"
+#define MSJ_ARG_TIPO_SALIDA2 "se especifico el nombre del archivo de salida, pero no su tipo con -of\n"
+#define MSJ_ARG_NOMBRE_SALIDA2 "se especifico el tipo del archivo de salida, pero no el nombre con -o\n"
+#define MSJ_ARG_TIPO_ENTRADA2 "se especifico el nombre del archivo de entrada, pero no su tipo con -if\n"
+#define MSJ_ARG_NOMBRE_ENTRADA2 "se especifico el tipo del archivo de entrada , pero no el nombre con -i\n"
 
 /*Mensajes error memoria */
-#define MSJ_ARG_MEMORIA_NO_ESPECIFICADA " -m : No se especifico la cantidad de memoria a asignar"
-#define MSJ_ARG_MEMORIA_INV " -m : Se ingreso un valor invalido"
+#define MSJ_ARG_MEMORIA_NO_ESPECIFICADA " -m : No se especifico la cantidad de memoria a asignar\n"
+#define MSJ_ARG_MEMORIA_INV " -m : Se ingreso un valor invalido\n"
 
 /*Mensajes de error Cantidad de argumentos/argumento invalido */
-#define MSJ_ARG_MUCHOS " se han ingresado mas argumentos de lo permitido"
-#define MSJ_ARG_INV " se ha ingresado un argumento invalido"
+#define MSJ_ARG_MUCHOS " se han ingresado mas argumentos de lo permitido\n"
+#define MSJ_ARG_INV " se ha ingresado un argumento invalido\n"
 
 /*Cantidad maxima de argumentos */
 #define MAX_ARG 12
