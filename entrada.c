@@ -3,28 +3,11 @@
 #include <string.h>
 #include "entrada.h"
 
-int main(void){
-	char archivo_entrada[] = "file.txt";
-	size_t cant_palabras = 3;
-	int * vtr_palabras_convertidas;
-	status_t estado;
-
-	estado = procesar_entrada_archivo( cant_palabras,archivo_entrada,&vtr_palabras_convertidas );
-	if( estado != ST_OK ){
-		puts("Imprime error");
-		free(vtr_palabras_convertidas);
-		return EXIT_FAILURE;
-	}
-	else{
-		puts("Todo salio bien en el main");
-		free(vtr_palabras_convertidas);
-		return EXIT_SUCCESS;
-	}
-}
-/*esta funcion lee el archivo de entrada */
- /* y dvuelve un vector de palabras convertidas a enteros */
-status_t procesar_entrada_archivo( size_t  cant_palabras , char * archivo_entrada ,
-								   int ** pvtr_palabras_convertidas ){
+status_t procesar_entrada_archivo( size_t  cant_palabras ,
+								   char * archivo_entrada ,
+								   int ** pvtr_palabras_convertidas ,
+								   bool_t entrada_archivo ,
+								   archivo_t entrada_tipo ){
 	FILE * archivo;
 	char  cadena_ingreso[MAX_CANT_INGRESO];
 	size_t var_posc;
@@ -36,62 +19,76 @@ status_t procesar_entrada_archivo( size_t  cant_palabras , char * archivo_entrad
 	if( !archivo_entrada || !pvtr_palabras_convertidas ){
 		return ST_PUNTERO_NULO;
 	}
-
-	archivo = fopen(archivo_entrada,"r");
-	if( !archivo ){
-		puts("No pudo abrir el archivo");
-		return ST_ERROR_ABRIR_ARCHIVO;
-	}
-
+/*se crea el vector donde guardara las palabras convertidas*/
 	vtr_palabras_convertidas_aux =( int * )calloc( cant_palabras,sizeof(int) );
 	if( !vtr_palabras_convertidas_aux ){
-/*si no se puede crear el vector para las palabras ,*/
-/* entonces se cierra el archivo y termina*/
-		puts("No hay memoria para crear un vector");
-		fclose(archivo);
 		return ST_ERROR_NO_MEMORIA;
 	}
-
-	for( var_aux = 0,var_posc = 0;var_posc < cant_palabras
-		 ;var_aux++){
-		if( !fgets( cadena_ingreso,MAX_CANT_INGRESO,archivo )){
-			if( feof(archivo) ){
+/*caso donde se lee por stdin*/
+	if( entrada_archivo == FALSO ){
+		for( var_aux = 0,var_posc = 0;var_posc < cant_palabras
+			 ;var_aux++){
+			if( !fgets( cadena_ingreso,MAX_CANT_INGRESO,stdin )){
+/*no pudo leer por consola*/
+				estado = ST_ERROR_LEER_CONSOLA;
+				break;
+			}
+			estado = convertir_palabra_str_int( cadena_ingreso,&palabra_convertida_aux );
+			if( estado == ST_OK ){
+/*si pudo convertir la palabra a un entero lo guarda en el vector*/
+				vtr_palabras_convertidas_aux[var_posc] = palabra_convertida_aux;
+				var_posc++;
+			}
+			else if( estado == ST_VECTOR_DE_ESPACIOS )
+								{}
+			else{
+				break;
+			}
+		}
+	}
+	else{
+		archivo = fopen(archivo_entrada,"r");
+		if( !archivo ){
+			free(vtr_palabras_convertidas_aux);
+			return ST_ERROR_ABRIR_ARCHIVO;
+		}
+		for( var_aux = 0,var_posc = 0;var_posc < cant_palabras
+			 ;var_aux++){
+			if( !fgets( cadena_ingreso,MAX_CANT_INGRESO,archivo )){
+				if( feof(archivo) ){
 /*si fgets lee cadena vacia y EOF esta activo , entonces */
 /*se termino de leer el archivo*/
-				puts("Encontro fin de archivo y la cadena esta vacia");
-				estado = ST_EOF_Y_CADENA_VACIA;
-				break;
-			}
-			else{
+					estado = ST_EOF_Y_CADENA_VACIA;
+					break;
+				}
+				else{
 /*si fgets devuelve NULL y no esta activo EOF entonces no pudo leer el archivo*/
-				puts("Error al querer leer de ARCHIVO");
-				estado = ST_ERROR_LECTURA_ARCHIVO;
+					estado = ST_ERROR_LECTURA_ARCHIVO;
+					break;
+				}
+			}
+			estado = convertir_palabra_str_int( cadena_ingreso,&palabra_convertida_aux );
+			if( estado == ST_OK ){
+/*si pudo convertir la palabra a un entero lo guarda en el vector*/
+				vtr_palabras_convertidas_aux[var_posc] = palabra_convertida_aux;
+				var_posc++;
+			}
+			else if( estado == ST_VECTOR_DE_ESPACIOS )
+								{}
+			else{
 				break;
 			}
 		}
-		estado = convertir_palabra_str_int( cadena_ingreso,&palabra_convertida_aux );
-		if( estado == ST_OK ){
-/*si pudo convertir la palabra a un entero lo guarda en el vector*/
-			vtr_palabras_convertidas_aux[var_posc] = palabra_convertida_aux;
-			var_posc++;
-		}
-		else if( estado == ST_VECTOR_DE_ESPACIOS )
-							{}
-		else{
-			break;
+		if( fclose(archivo) == EOF ){
+/*no pudo cerrar el archivo*/
+			free(vtr_palabras_convertidas_aux);
+			return ST_ERROR_CERRAR_ARCHIVO;
 		}
 	}
-/*como no se va seguir leyendo el archivo , se cierra el flujo*/
-	if( fclose( archivo ) == EOF ){
-/*si aparece un error se debe liberar la memoria y terminar*/
-		puts("El archivo no pudo ser cerrado");
-		free(vtr_palabras_convertidas_aux);
-		return ST_ERROR_CERRAR_ARCHIVO;
-	}
+
 	if( estado == ST_EOF_Y_CADENA_VACIA || estado == ST_OK ){
 		if( var_posc != cant_palabras ){
 /*si termina de leer el archivo y no se lleno el vector es un error*/
-			puts("No se lleno el vector");
 			free(vtr_palabras_convertidas_aux);
 			return ST_ERROR_VECTOR_INCOMPLETO;
 		}
@@ -103,7 +100,6 @@ status_t procesar_entrada_archivo( size_t  cant_palabras , char * archivo_entrad
 	}
 	else{
 /*se retorna el estado para luego evaluar e imprimir el error en main*/
-		puts("Imprimir error");
 		free(vtr_palabras_convertidas_aux);
 		return estado;
 	}
@@ -139,7 +135,7 @@ status_t convertir_palabra_str_int( char * cadena_ingreso , int * palabra_conver
 /*se descarto un comentario , entonces si apareciera una letra se trata como error*/
 		if(( caracter_aux > 'a' && caracter_aux < 'z' )||
 			( caracter_aux > 'A' && caracter_aux < 'Z' )){
-			puts("Error encontraste una letra en la palabra ingresada");
+/*se encontro una letra en la palabra*/
 			return ST_ERROR_PALABRA_INCORRECTA;
 		}
 /*toda "palabra" comienza con un signo + (mas) */
@@ -147,9 +143,30 @@ status_t convertir_palabra_str_int( char * cadena_ingreso , int * palabra_conver
 /*cuando se encuentra el signo mas , se copia los siguientes 4 caracteres */
 /*si no llegara a ser un numero se sabra en el momento de convertirlo*/
 			for( var_aux = 0;
-				 cadena_ingreso[var_posc + 1] != '\0'&&var_aux < MAX_LARGO_PALABRA;
+				 cadena_ingreso[var_posc + 1] != '\0'&&var_aux <= MAX_LARGO_PALABRA;
 				 var_posc++,var_aux++ ){
 				cadena_palabra[var_aux] = cadena_ingreso[var_posc + 1];
+			}
+/*si pudo leer la palabra y un caracter mas */
+			if( var_aux == MAX_LARGO_PALABRA + 1){
+/*pregunta si el ultimo caracter es valido ( \n, \0 , ESPACIO) */
+/*es decir no ingreso una palabra incorrecta ( por ejemplo +12345 )*/
+				caracter_aux = cadena_palabra[var_aux - 1];
+				if( caracter_aux == ' ' || caracter_aux == '\n' ){
+/*cambia ese caracter por un \0*/
+					cadena_palabra[var_aux - 1] = '\0';
+				}
+				else if( caracter_aux != '\0' ){
+					return ST_ERROR_PALABRA_INCORRECTA;
+				}
+			}
+/*si solo pudo leer los 4 caracteres de la palabra*/
+			else if( var_aux == MAX_LARGO_PALABRA ){
+				cadena_palabra[var_aux] = '\0';
+			}
+/*si lee menos de 4 caracteres */
+			else{
+				return ST_ERROR_PALABRA_INCOMPLETA;
 			}
 			break;
 		}
@@ -161,17 +178,9 @@ status_t convertir_palabra_str_int( char * cadena_ingreso , int * palabra_conver
 		}
 	}
 
-	if( cant_espacios == var_posc - 1 ){
-		puts("Son todos espacios");
+	if( cant_espacios == var_posc ){
+/*son todos espacios*/
 		return ST_VECTOR_DE_ESPACIOS;
-	}
-/*si pudo guardar los 4 caracteres despues del + , entonces , cierra la cadena*/
-	if( var_aux == MAX_LARGO_PALABRA ){
-		cadena_palabra[var_aux] = '\0';
-	}
-	else{
-		puts("La palabra esta incompleta");
-		return ST_ERROR_PALABRA_INCOMPLETA;
 	}
 
 	palabra_convertida_aux = strtol( cadena_palabra,&ptr_aux,10 );
@@ -184,18 +193,16 @@ status_t convertir_palabra_str_int( char * cadena_ingreso , int * palabra_conver
 			}
 		}
 		if( var_aux == MAX_LARGO_PALABRA ){
-			puts("Ingreso el 0000");
 /*como el 0 es un valor correcto , se carga y termian la funcion*/
 			*palabra_convertida = 0;
 			return ST_OK;
 		}
 /*si devuelve 0 (strtol) y no es el 0 , entonces s un error*/
-		puts("Error al convertir la palabra");
 		return ST_ERROR_PALABRA_NO_CONVERTIDA;
 	}
 /*se valida que convirtio los 4 caracteres a un numero */
 	if( *ptr_aux != '\0' ){
-		puts("Error la palabra no contiene solo numeros");
+/*la palabra no contiene solo numeros*/
 		return ST_ERROR_PALABRA_NO_NUMERICA;
 	}
 /*en este punto todo salio bien , entonces se carga el valor*/
