@@ -5,7 +5,7 @@
 #include "operacions.h"
 
 
-
+/*Verifica si la instruccion de memoria de la palabra es valida */
 
 int verificar_posicion_memoria(int cantidad_memoria){
     int memoria = cabeza.lista_instrucciones[cabeza.index];
@@ -18,7 +18,8 @@ int verificar_posicion_memoria(int cantidad_memoria){
     return memoria;
 }
 
-
+/*Manda un mensaje de error en caso de que haya ocurrido uno */
+/*Devuelve VERDADERO si no ocurrio ningun error, sino, devuelve falso */
 bool_t errores_instrucciones(status_op_t error){
     switch(error){
         case NO_HALT:
@@ -34,20 +35,24 @@ bool_t errores_instrucciones(status_op_t error){
             fprintf(stderr , "%s : %s" ,MSJ_ERROR ,MSJ_ERROR_OP_VALOR_INGRESADO_INV);
             break;
         case OK_OP:
-            printf("%s \n",MSJ_FINAL);
+            printf("%s \n",MSJ_OP_FINAL);
             return VERDADERO;
             break;
     }
 
-    printf("%s \n",MSJ_FINAL);
+    printf("%s \n",MSJ_OP_FINAL);
     return FALSO;
 }
+
+
+/*Funcion que ejecuta las palabras guardadas en la memoria */
 status_op_t ejecutar_instrucciones(int cantidad_memoria){
+
     status_op_t estado;
     int posicion_asignada;
     int codigo;
 
-    printf("%s \n", MSJ_INICIO);
+    printf("%s \n", MSJ_OP_INICIO);
     while(1){
 
     /*Si la operacion indica hacia memoria que esta fuera del rango, manda error */
@@ -58,7 +63,6 @@ status_op_t ejecutar_instrucciones(int cantidad_memoria){
     codigo = cabeza.lista_instrucciones[cabeza.index] / 100;
 
      
-
         switch(codigo){
             /*Operaciones de entrada/salida */
             case OPERACION_LEER:
@@ -134,7 +138,6 @@ status_op_t ejecutar_instrucciones(int cantidad_memoria){
                 break;
             
             default:
-                printf("%s \n",MSJ_FINAL);
                 break;
         }
 
@@ -153,7 +156,7 @@ status_op_t leer(int posicion_asignada){
     char numero_ingresado[20];
 
     /*Lectura */
-    printf("%s",MSJ_OPERACION_ESCRIBIR);
+    printf("%s",MSJ_OP_OPERACION_ESCRIBIR);
     fgets(numero_ingresado , 20 , stdin);
 
     /*Si no ingresa numeros, devuelve error */
@@ -172,7 +175,7 @@ status_op_t leer(int posicion_asignada){
 
 void escribir(int posicion_asignada){
 
-    printf("%s %i : %i \n",MSJ_OPERACION_LEER, posicion_asignada , cabeza.lista_instrucciones[posicion_asignada]);
+    printf("%s %i : %i \n",MSJ_OP_OPERACION_LEER, posicion_asignada , cabeza.lista_instrucciones[posicion_asignada]);
 
     cabeza.index++;
 }
@@ -198,6 +201,7 @@ void guardar(int posicion_asignada){
 status_op_t pcargar(int posicion_asignada){
     posicion_asignada = cabeza.lista_instrucciones[posicion_asignada] % 100;
 
+    /*Si la posicion de la palabra a la que apunta la funcion es invalida, devuelve error */
     if( verificar_posicion_memoria(posicion_asignada) <= -1){
         return POSICION_FUERA_DE_RANGO;
     }
@@ -211,6 +215,7 @@ status_op_t pcargar(int posicion_asignada){
 status_op_t pguardar(int posicion_asignada){
     posicion_asignada = cabeza.lista_instrucciones[posicion_asignada] % 100;
 
+    /*Si la posicion de la palabra a la que apunta la funcion es invalida , devuelve error */
     if(verificar_posicion_memoria(posicion_asignada) <= -1){
         return POSICION_FUERA_DE_RANGO;
     }

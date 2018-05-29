@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 /*Mensaje de error */
 #define MSJ_ERROR "Ha ocurrido un error  "

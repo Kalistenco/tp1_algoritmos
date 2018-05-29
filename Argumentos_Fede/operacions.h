@@ -8,12 +8,12 @@
 #include "tipos.h"
 
 /*Mensaje de Inicio/FIn */
-#define MSJ_INICIO "*********INICIO DE EJECUCION DEL SIMPLETRON*********"
-#define MSJ_FINAL "*********FINAL DE EJECUCION DEL SIMPLETRON*********"
+#define MSJ_OP_INICIO "*********INICIO DE EJECUCION DEL SIMPLETRON*********"
+#define MSJ_OP_FINAL "*********FINAL DE EJECUCION DEL SIMPLETRON*********"
 
 /*Mensajes de entrada/salida*/
-#define MSJ_OPERACION_ESCRIBIR "Ingrese una palabra : "
-#define MSJ_OPERACION_LEER "Contenido de la posicion "
+#define MSJ_OP_OPERACION_ESCRIBIR "Ingrese una palabra : "
+#define MSJ_OP_OPERACION_LEER "Contenido de la posicion "
 
 
 /*Mensajes de error */
@@ -81,6 +81,7 @@ void jmpzero(int posicion_asignada);
 void jnz(int posicion_asignada);
 void djnz(int posicion_asignada);
 
+/*Funcion para probar las funciones anteriores */
 void prueba(int codigo, int posicion_asignada);
 
 #endif
