@@ -3,7 +3,7 @@
 #include <string.h>
 #include "entrada.h"
 
-status_t procesar_entrada_archivo( size_t  cant_palabras ,
+status_t_entrada procesar_entrada_archivo( size_t  cant_palabras ,
 								   char * archivo_entrada ,
 								   int ** pvtr_palabras_convertidas ,
 								   bool_t entrada_archivo ,
@@ -13,8 +13,8 @@ status_t procesar_entrada_archivo( size_t  cant_palabras ,
 	size_t var_posc;
 	int palabra_convertida_aux;
 	int * vtr_palabras_convertidas_aux;
-	size_t var_aux;
-	status_t estado;
+	/*size_t var_aux;*/
+	status_t_entrada estado;
 
 	if( !archivo_entrada || !pvtr_palabras_convertidas ){
 		return ST_PUNTERO_NULO;
@@ -26,8 +26,11 @@ status_t procesar_entrada_archivo( size_t  cant_palabras ,
 	}
 /*caso donde se lee por stdin*/
 	if( entrada_archivo == FALSO ){
-		for( var_aux = 0,var_posc = 0;var_posc < cant_palabras
+		var_posc = 0;
+		while( var_posc < cant_palabras ){
+/*		for( var_aux = 0,var_posc = 0;var_posc < cant_palabras
 			 ;var_aux++){
+*/			 printf("%s :%lu\n","Ingrese en la posicion",var_posc );
 			if( !fgets( cadena_ingreso,MAX_CANT_INGRESO,stdin )){
 /*no pudo leer por consola*/
 				estado = ST_ERROR_LEER_CONSOLA;
@@ -52,9 +55,11 @@ status_t procesar_entrada_archivo( size_t  cant_palabras ,
 			free(vtr_palabras_convertidas_aux);
 			return ST_ERROR_ABRIR_ARCHIVO;
 		}
-		for( var_aux = 0,var_posc = 0;var_posc < cant_palabras
+		var_posc = 0;
+		while( var_posc < cant_palabras ){
+/*		for( var_aux = 0,var_posc = 0;var_posc < cant_palabras
 			 ;var_aux++){
-			if( !fgets( cadena_ingreso,MAX_CANT_INGRESO,archivo )){
+*/			if( !fgets( cadena_ingreso,MAX_CANT_INGRESO,archivo )){
 				if( feof(archivo) ){
 /*si fgets lee cadena vacia y EOF esta activo , entonces */
 /*se termino de leer el archivo*/
@@ -93,7 +98,7 @@ status_t procesar_entrada_archivo( size_t  cant_palabras ,
 			return ST_ERROR_VECTOR_INCOMPLETO;
 		}
 		else{
-			puts("Fue cargado correctamente");
+/*en este puento fue cargado correctamente*/
 			*pvtr_palabras_convertidas = vtr_palabras_convertidas_aux;
 			return ST_OK;
 		}
@@ -106,7 +111,7 @@ status_t procesar_entrada_archivo( size_t  cant_palabras ,
 }
 
 
-status_t convertir_palabra_str_int( char * cadena_ingreso , int * palabra_convertida ){
+status_t_entrada convertir_palabra_str_int( char * cadena_ingreso , int * palabra_convertida ){
 	size_t var_aux;
 	size_t var_posc;
 	char cadena_palabra[MAX_LARGO_PALABRA + 1];
@@ -198,12 +203,12 @@ status_t convertir_palabra_str_int( char * cadena_ingreso , int * palabra_conver
 			return ST_OK;
 		}
 /*si devuelve 0 (strtol) y no es el 0 , entonces s un error*/
-		return ST_ERROR_PALABRA_NO_CONVERTIDA;
+		return ST_ERROR_PALABRA_INCORRECTA;
 	}
 /*se valida que convirtio los 4 caracteres a un numero */
 	if( *ptr_aux != '\0' ){
 /*la palabra no contiene solo numeros*/
-		return ST_ERROR_PALABRA_NO_NUMERICA;
+		return ST_ERROR_PALABRA_INCORRECTA;
 	}
 /*en este punto todo salio bien , entonces se carga el valor*/
 	*palabra_convertida = palabra_convertida_aux;
@@ -211,3 +216,48 @@ status_t convertir_palabra_str_int( char * cadena_ingreso , int * palabra_conver
 	return ST_OK;
 }
 
+
+void imprimir_error_entrada( status_t_entrada estado_entrada ){
+
+	switch( estado_entrada ){
+		case ST_ERROR_LECTURA_ARCHIVO:
+			fprintf( stderr,"%s:%s\n", MSJ_ERROR_PREFIJO,
+									  MSJ_ERROR_LECTURA_ARCHIVO );
+			break;
+		case ST_ERROR_PALABRA_INCORRECTA:
+			fprintf( stderr,"%s:%s\n", MSJ_ERROR_PREFIJO,
+									  MSJ_ERROR_PALABRA_INCORRECTA );
+			break;
+		case ST_ERROR_PALABRA_INCOMPLETA:
+			fprintf( stderr,"%s:%s\n", MSJ_ERROR_PREFIJO,
+									  MSJ_ERROR_PALABRA_INCOMPLETA );
+			break;
+		case ST_PUNTERO_NULO:
+			fprintf( stderr,"%s:%s\n", MSJ_ERROR_PREFIJO,
+									  MSJ_ERROR_PUNTERO_NULO );
+			break;
+		case ST_ERROR_ABRIR_ARCHIVO:
+			fprintf( stderr,"%s:%s\n", MSJ_ERROR_PREFIJO,
+									  MSJ_ERROR_ABRIR_ARCHIVO );
+			break;
+		case ST_ERROR_NO_MEMORIA:
+			fprintf( stderr,"%s:%s\n", MSJ_ERROR_PREFIJO,
+									  MSJ_ERROR_NO_MEMORIA );
+			break;
+		case ST_ERROR_CERRAR_ARCHIVO:
+			fprintf( stderr,"%s:%s\n", MSJ_ERROR_PREFIJO,
+									  MSJ_ERROR_CERRAR_ARCHIVO );
+			break;
+/*		case ST_ERROR_VECTOR_INCOMPLETO,:
+			fprintf( stderr,"%s:%sn", MSJ_ERROR_PREFIJO,
+			 						  MSJ_ERROR_VECTOR_INCOMPLETO );
+			break;
+*/		case ST_ERROR_LEER_CONSOLA:
+			fprintf( stderr,"%s:%s\n", MSJ_ERROR_PREFIJO,
+									  MSJ_ERROR_LEER_CONSOLA );
+			break;
+		default:
+			fprintf( stderr,"%s:%s\n", MSJ_ERROR_PREFIJO,"Error no especifivado" );
+	}
+	return;
+}
