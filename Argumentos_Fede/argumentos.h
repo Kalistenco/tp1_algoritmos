@@ -32,12 +32,23 @@
 #define MSJ_ARG_MUCHOS " se han ingresado mas argumentos de lo permitido\n"
 #define MSJ_ARG_INV " se ha ingresado un argumento invalido\n"
 
+/*Mensajedes de la funcion ayuda */
+#define MSJ_ARG_AYUDA_INICIO "*********AYUDA*********"
+#define MSJ_ARG_AYUDA_H "-h  -- Muetra la ayuda"
+#define MSJ_ARG_AYUDA_M "-m  -- Numero Cantidad de memoria que usara el programa"
+#define MSJ_ARG_AYUDA_I "-i -- Nombre de archivo EL programa leera el archivo pasado , en caso contrario, de stdin"
+#define MSJ_ARG_AYUDa_IF "-if bin/txt -- Tipo del archivo de entrada : binario/texto"
+#define MSJ_ARG_AYUDA_O "-o Nombre de archivo -- La salida se hara en el archivo pasado , en caso contrariom desde stdout"
+#define MSJ_ARG_AYUDA_OF "-of bin/txt -- Tipo del archivo de salida : binario/texto"
+#define MSJ_ARG_AYUDA_FIN "*********FIN DE AYUDA*********"
+
 /*Cantidad maxima de argumentos */
 #define MAX_ARG 12
 
 /*Extension de los archivos de entrada esperados */
 #define ARCHIVO_ENTRADA_EXTENSION_TXT ".lms"
 #define ARCHIVO_ENTRADA_EXTENSION_BIN ".bin"
+
 
 /*Valores DEFAULT del mensajero */
 #define NOMBRE_DEFAULT " "
@@ -52,12 +63,12 @@
 /*OPCIONES_ARG = Cantidad de argumentos, si se modifica biblioteca, modificar cantidad */
 static const char * const argumentos_lista[] = {"-h" ,"-m" , "-i" , "-if" , "-o" , "-of" };
 enum argumentos_index {
-    H = 0,
-    M = 1,
-    I = 2,
-    IF = 3,
-    O = 4,
-    OF = 5
+    ARG_H = 0,
+    ARG_M = 1,
+    ARG_I = 2,
+    ARG_IF = 3,
+    ARG_O = 4,
+    ARG_OF = 5
 };
 
 
@@ -91,5 +102,8 @@ bool_t argumentos_error_imprimir(status_arg_t estado);
 bool_t validar_no_argumento(char * argv_lista[], int posicion );
 bool_t validar_tipo_archivo(char * argv_lista[] , int posicion , size_t * contador);
 status_arg_t validar_argumentos(int argc_cantidad , char * argv_lista[], struct mensajero * mandar);
+
+/*Imprime la ayuda */
+void imprimir_ayuda();
 
 #endif

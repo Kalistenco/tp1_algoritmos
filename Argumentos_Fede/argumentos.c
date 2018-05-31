@@ -127,12 +127,12 @@ status_arg_t validar_argumentos(int argc_cantidad , char * argv_lista[] , struct
     for(i = 1; i < argc_cantidad ; i++){
 
         /*En caso de que se usa el argumento -h */
-        if(strcmp( argv_lista[i] , argumentos_lista[H]) == 0){
+        if(strcmp( argv_lista[i] , argumentos_lista[ARG_H]) == 0){
             mandar->opcion_ayuda = VERDADERO;
         }
 
         /*En caso de que se use el argumento -m y sus validaciones */
-        else if(strcmp( argv_lista[i] , argumentos_lista[M]) == 0){
+        else if(strcmp( argv_lista[i] , argumentos_lista[ARG_M]) == 0){
             /*Si es el ultimo argumento, significa que no le pasaron la cantidad de memoria */
             if( (i+1) == argc_cantidad){
                 return ERROR_MEMORIA_NO_ESPECIFICADA;
@@ -150,7 +150,7 @@ status_arg_t validar_argumentos(int argc_cantidad , char * argv_lista[] , struct
         }
 
         /*En caso de que se use el argumento -i y sus validaciones */
-        else if(strcmp( argv_lista[i], argumentos_lista[I]) == 0){
+        else if(strcmp( argv_lista[i], argumentos_lista[ARG_I]) == 0){
             
             /*Si encuentra que la palabra siguiente a -i es otro argumento o es el ultimo elemento de la lista , devuelve error
             porque faltaria el nombre del archivo , sino, copia el nombre al mensajero */
@@ -166,7 +166,7 @@ status_arg_t validar_argumentos(int argc_cantidad , char * argv_lista[] , struct
         }
 
         /*En caso de que se use el argumento -if y sus validaciones */
-        else if(strcmp( argv_lista[i] , argumentos_lista[IF]) == 0){
+        else if(strcmp( argv_lista[i] , argumentos_lista[ARG_IF]) == 0){
             
             /* Primero mira si despues del -if encuentra una palabra que no sea otro argumento o es el final de la cadena
             Si encuentra una cadena distina a un argumento , valida si esa cadena es un txt o bin
@@ -188,7 +188,7 @@ status_arg_t validar_argumentos(int argc_cantidad , char * argv_lista[] , struct
         }
 
         /*En caso de que se use el argumento -o y sus validaciones*/
-        else if(strcmp ( argv_lista[i] , argumentos_lista[O]) == 0){
+        else if(strcmp ( argv_lista[i] , argumentos_lista[ARG_O]) == 0){
 
             /*Si encuentra que la palabra siguiente a -o es otro argumento o es el final de la cadena , devuelve error
             porque faltaria el nombre del archivo , sino, copia el nombre al mensajero */
@@ -204,7 +204,7 @@ status_arg_t validar_argumentos(int argc_cantidad , char * argv_lista[] , struct
         }
 
         /*En caso de que se use el argumento -of y sus validaciones */
-        else if(strcmp( argv_lista[i] , argumentos_lista[OF]) == 0){
+        else if(strcmp( argv_lista[i] , argumentos_lista[ARG_OF]) == 0){
             
              /* Primero mira si despues del -of encuentra una palabra que no sea otro argumento o que no sea el final de la cadena
             Si encuentra una cadena distina a un argumento , valida si esa cadena es un txt o bin
@@ -250,5 +250,18 @@ status_arg_t validar_argumentos(int argc_cantidad , char * argv_lista[] , struct
     
     /* Si todas las validaciones salen sin error, devuelve OK */
     return OK;
+}
+
+/*Funcion que imprime la ayuda */
+void imprimir_ayuda(){
+    printf("\n%s \n", MSJ_ARG_AYUDA_INICIO );
+    printf("%s \n", MSJ_ARG_AYUDA_H );
+    printf("%s \n", MSJ_ARG_AYUDA_M );
+    printf("%s \n", MSJ_ARG_AYUDA_I );
+    printf("%s \n", MSJ_ARG_AYUDa_IF );
+    printf("%s \n", MSJ_ARG_AYUDA_O );
+    printf("%s \n", MSJ_ARG_AYUDA_OF );
+    printf("%s \n", MSJ_ARG_AYUDA_FIN);
+    printf("\n");
 }
 

@@ -16,6 +16,12 @@ int main(int argc , char * argv[]){
     inicializar_mensajero(&msj);
 
     error_argumento = validar_argumentos(argc , argv ,&msj);
+
+    /*Imprime el cartel de ayuda */
+    if(msj.opcion_ayuda == VERDADERO){
+        imprimir_ayuda();
+    }
+
     if(argumentos_error_imprimir(error_argumento) == FALSO){
         return 1;
     }
