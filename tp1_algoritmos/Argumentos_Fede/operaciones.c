@@ -6,12 +6,13 @@
 
 
 
-
+/*verifica que la posicion( los dos ultimos numeros de la palabra) este en rango*/
 int verificar_posicion_memoria(int cantidad_memoria){
     int memoria = cabeza.lista_instrucciones[cabeza.index];
     memoria = memoria % 100;
-
-    if(memoria > cantidad_memoria){
+/*como la memoria no puede ser negativa , retorna un valor negativo para decir qeu fallo*/
+/*se puede leer hasta la posicion cant_memoria - 1*/
+    if(memoria >= cantidad_memoria){
         return -1;
     }
 
@@ -33,6 +34,15 @@ bool_t errores_instrucciones(status_op_t error){
         case VALOR_INGRESADO_INV:
             fprintf(stderr , "%s : %s" ,MSJ_ERROR ,MSJ_ERROR_OP_VALOR_INGRESADO_INV);
             break;
+/*      case ST_PUNTERO_NULO:
+			fprintf(stderr,"%s : %s\n", MSJ_ERROR, MSJ_ERROR_PUNTERO_NULO );
+*/			break;
+		case NO_SE_PUDO_LEER_VALOR:
+			fprintf(stderr,"%s : %s", MSJ_ERROR, MSJ_NO_SE_PUDO_LEER_VALOR);
+			break;
+		case CANT_MEMORIA_CERO:
+			fprintf(stderr,"%s : %s\n", MSJ_ERROR,MSJ_MEMORIA_INGRESADA_CERO);
+			break;
         case OK_OP:
             printf("%s \n",MSJ_FINAL);
             return VERDADERO;
@@ -42,43 +52,52 @@ bool_t errores_instrucciones(status_op_t error){
     printf("%s \n",MSJ_FINAL);
     return FALSO;
 }
+
 status_op_t ejecutar_instrucciones(int cantidad_memoria){
     status_op_t estado;
     int posicion_asignada;
     int codigo;
 
     printf("%s \n", MSJ_INICIO);
-    while(1){
-
-    /*Si la operacion indica hacia memoria que esta fuera del rango, manda error */
-    if((posicion_asignada = verificar_posicion_memoria(cantidad_memoria)) <= -1){
-        return POSICION_FUERA_DE_RANGO;
+    if( !cantidad_memoria ){
+		return CANT_MEMORIA_CERO;
     }
+    while( cabeza.index < cantidad_memoria ){
 
-    codigo = cabeza.lista_instrucciones[cabeza.index] / 100;
+/*Si la operacion indica hacia memoria que esta fuera del rango, manda error */
+		if((posicion_asignada = verificar_posicion_memoria(cantidad_memoria)) <= -1){
+			return POSICION_FUERA_DE_RANGO;
+		}
 
-     
+		codigo = cabeza.lista_instrucciones[cabeza.index] / 100;
 
         switch(codigo){
             /*Operaciones de entrada/salida */
             case OPERACION_LEER:
-                estado = leer(posicion_asignada);
+                estado = leer(posicion_asignada );
                 /*En caso de que haya devueldo un error */
                 if(estado != OK_OP){
-                    return estado;
+/*me parece mas claro tener esto fuera de la funcion , por que queda mas claro que aumentas el index*/
+						return estado;
+				}
+				else{
+                   cabeza.index++;
                 }
-
                 break;
+
             case OPERACION_ESCRIBIR:
                 escribir(posicion_asignada);
+                cabeza.index++;
                 break;
-            
+
             /*Operaciones de movimiento */
             case OPERACION_CARGAR:
                 cargar(posicion_asignada);
+                cabeza.index++;
                 break;
             case OPERACION_GUARDAR:
                 guardar(posicion_asignada);
+                cabeza.index++;
                 break;
             case OPERACION_PCARGAR:
                 estado = pcargar(posicion_asignada);
@@ -86,7 +105,7 @@ status_op_t ejecutar_instrucciones(int cantidad_memoria){
                 if(estado != OK_OP){
                     return estado;
                 }
-
+				cabeza.index++;
                 break;
             case OPERACION_PGUARDAR:
                 estado = pguardar(posicion_asignada);
@@ -94,23 +113,27 @@ status_op_t ejecutar_instrucciones(int cantidad_memoria){
                 if(estado != OK_OP){
                     return estado;
                 }
-
+			    cabeza.index++;
                 break;
 
             /*Operaciones aritemticas */
             case OPERACION_SUMAR:
                 suma(posicion_asignada);
+                cabeza.index++;
                 break;
             case OPERACION_RESTAR:
                 resta(posicion_asignada);
+				cabeza.index++;
                 break;
             case OPERACION_DIVIDIR:
                 division(posicion_asignada);
+				cabeza.index++;
                 break;
             case OPERACION_MULTIPLICAR:
                 multiplicar(posicion_asignada);
+				cabeza.index++;
                 break;
-            
+
             /*Operaciones de control */
             case OPERACION_JMP:
                 jmp(posicion_asignada);
@@ -127,54 +150,71 @@ status_op_t ejecutar_instrucciones(int cantidad_memoria){
             case OPERACION_DJNZ:
                 djnz(posicion_asignada);
                 break;
-            
+
             /*Termina el programa */
             case OPERACION_HALT:
                 return OK_OP;
                 break;
-            
+
             default:
                 printf("%s \n",MSJ_FINAL);
-                break;
-        }
-
-        if(cabeza.index > cantidad_memoria){
-            return NO_HALT;
+                return NINGUN_CODIGO_CONOCIDO;
         }
     }
+	return OK_OP;
 }
 
 /*******************************************************************/
 /*Operaciones de entrada/salida */
 /*******************************************************************/
 
-status_op_t leer(int posicion_asignada){
-    char * puntero;
-    char numero_ingresado[20];
+status_op_t leer( int posicion_asignada ){
+    char * ptr_aux;
+    char numero_ingresado[MAX_CANT_INGRESO_STDIN];
+	int num_convertido;
+	int var_aux;
 
     /*Lectura */
     printf("%s",MSJ_OPERACION_ESCRIBIR);
-    fgets(numero_ingresado , 20 , stdin);
+
+    if( !fgets(numero_ingresado , MAX_CANT_INGRESO_STDIN , stdin) ){
+		return NO_SE_PUDO_LEER_VALOR;
+    }
 
     /*Si no ingresa numeros, devuelve error */
-    if((strtol(numero_ingresado,&puntero,10) == 0 && *puntero != '\n')){
-        return VALOR_INGRESADO_INV;
-    }
-    else if(*puntero != '\n'){
-        return VALOR_INGRESADO_INV;
-    }   
-    
-    cabeza.lista_instrucciones[posicion_asignada] = strtol(numero_ingresado,&puntero,10);
-    cabeza.index++;
+    num_convertido = strtol( numero_ingresado,&ptr_aux,10 );
 
+/*como strtol devuelve 0 si apareciera un error */
+/*se tiene que validar que no se ingreso el 0 */
+    if( !num_convertido ){
+		for( var_aux = 0 ; numero_ingresado[var_aux] != '\0' ; var_aux++){
+			if( numero_ingresado[var_aux] != '0' ){
+/*si no es el 0 es por que hubo un error en strtol entonces para que se identifique ese error */
+/*cargo a var_aux un valor incorrecto por ejemplo : */
+				var_aux = -1;
+				break;
+			}
+		}
+/*si devuelve 0 (strtol) y la palabra no era 0000, entonces es un error*/
+		if( var_aux == -1 ){
+			return VALOR_INGRESADO_INV;
+		}
+/*si llega a este puento entonces ingreso el 0*/
+    }
+
+/*ahora valido que toda la cadena sea un numero */
+/*comparo contra \0 por que puede ingresar un valor y cerrarle el flujo*/
+	if( *ptr_aux != '\0' && *ptr_aux != '\n' ){
+		return VALOR_INGRESADO_INV;
+	}
+	cabeza.lista_instrucciones[posicion_asignada] = num_convertido;
     return OK_OP;
 }
 
 void escribir(int posicion_asignada){
 
     printf("%s %i : %i \n",MSJ_OPERACION_LEER, posicion_asignada , cabeza.lista_instrucciones[posicion_asignada]);
-
-    cabeza.index++;
+	return;
 }
 
 /*******************************************************************/
@@ -184,15 +224,13 @@ void escribir(int posicion_asignada){
 void cargar(int posicion_asignada){
 
     cabeza.acumulador = cabeza.lista_instrucciones[posicion_asignada];
-    
-    cabeza.index++;
+	return;
 }
 
 void guardar(int posicion_asignada){
 
     cabeza.lista_instrucciones[posicion_asignada] = cabeza.acumulador;
-
-    cabeza.index++;
+	return;
 }
 
 status_op_t pcargar(int posicion_asignada){
@@ -203,7 +241,6 @@ status_op_t pcargar(int posicion_asignada){
     }
 
     cabeza.acumulador = cabeza.lista_instrucciones[posicion_asignada];
-    cabeza.index++;
 
     return OK_OP;
 }
@@ -216,8 +253,6 @@ status_op_t pguardar(int posicion_asignada){
     }
 
     cabeza.lista_instrucciones[posicion_asignada] = cabeza.acumulador;
-    cabeza.index++;
-
     return OK_OP;
 }
 /*******************************************************************/
@@ -226,29 +261,25 @@ status_op_t pguardar(int posicion_asignada){
 void suma(int posicion_asignada){
 
     cabeza.acumulador = cabeza.acumulador + cabeza.lista_instrucciones[posicion_asignada];
-
-    cabeza.index++;
+	return;
 }
 
 void resta(int posicion_asignada){
 
     cabeza.acumulador = cabeza.acumulador - cabeza.lista_instrucciones[posicion_asignada];
-
-    cabeza.index++;
+	return;
 }
 
 void division(int posicion_asignada){
 
     cabeza.acumulador = cabeza.acumulador / cabeza.lista_instrucciones[posicion_asignada];
-
-    cabeza.index++;
+	return;
 }
 
 void multiplicar(int posicion_asignada){
 
     cabeza.acumulador = cabeza.acumulador * cabeza.lista_instrucciones[posicion_asignada];
-
-    cabeza.index++;
+	return;
 }
 
 /*******************************************************************/
@@ -257,18 +288,18 @@ void multiplicar(int posicion_asignada){
 void jmp(int posicion_asignada){
 
     cabeza.index = posicion_asignada;
-
+	return;
 }
 
 void jmpneg(int posicion_asignada){
-    
+
     if(cabeza.acumulador < 0){
         cabeza.index = posicion_asignada;
     }
     else{
         cabeza.index++;
     }
-
+	return;
 }
 
 void jmpzero(int posicion_asignada){
@@ -279,7 +310,7 @@ void jmpzero(int posicion_asignada){
     else{
         cabeza.index++;
     }
-
+	return;
 }
 
 void jnz(int posicion_asignada){
@@ -290,7 +321,7 @@ void jnz(int posicion_asignada){
     else{
         cabeza.index++;
     }
-
+	return;
 }
 
 void djnz(int posicion_asignada){
@@ -302,7 +333,7 @@ void djnz(int posicion_asignada){
     else{
         cabeza.index++;
     }
-
+	return;
 }
 
 void prueba(int codigo, int posicion_asignada){

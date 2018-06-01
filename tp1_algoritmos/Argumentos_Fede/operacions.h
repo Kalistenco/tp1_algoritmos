@@ -7,6 +7,8 @@
 
 #include "tipos.h"
 
+
+#define MSJ_MEMORIA_INGRESADA_CERO "La memoria no puede ser cero"
 /*Mensaje de Inicio/FIn */
 #define MSJ_INICIO "*********INICIO DE EJECUCION DEL SIMPLETRON*********"
 #define MSJ_FINAL "*********FINAL DE EJECUCION DEL SIMPLETRON*********"
@@ -21,6 +23,8 @@
 #define MSJ_ERROR_OP_CODIGO_NO_CONOCIDO "No se ha introducido ninguna operacion valida en la memoria : "
 #define MSJ_ERROR_OP_POSICION_FUERA_DE_RANGO "Se apunta a una memoria invalida en la instruccion de posicion : "
 #define MSJ_ERROR_OP_VALOR_INGRESADO_INV "se ha ingresado un valor invalido\n"
+#define MSJ_ERROR_PUNTERO_NULO "El puntero es nulo"
+#define MSJ_NO_SE_PUDO_LEER_VALOR "No se pudo leer el valor ingresado"
 
 /*Operacions y su codigo */
 #define OPERACION_LEER 10
@@ -40,13 +44,18 @@
 #define OPERACION_DJNZ 44
 #define OPERACION_HALT 45
 
+#define MAX_CANT_INGRESO_STDIN 20
+
 /*Posibles errores en la lectura de palabras */
-typedef enum status_op{
+typedef enum{
     NO_HALT,
     NINGUN_CODIGO_CONOCIDO,
     POSICION_FUERA_DE_RANGO,
     VALOR_INGRESADO_INV,
-    OK_OP
+    OK_OP,
+/*	PUNTERO_NULO,*/
+    NO_SE_PUDO_LEER_VALOR,
+    CANT_MEMORIA_CERO
 }status_op_t;
 
 /*Verifica si se va de rango la memoria */

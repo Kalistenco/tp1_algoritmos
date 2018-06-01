@@ -16,21 +16,19 @@ int main(int argc , char * argv[]){
 	status_t_entrada estado;
 
     inicializar_mensajero(&msj);
-
     error_argumento = validar_argumentos(argc , argv ,&msj);
     if(argumentos_error_imprimir(error_argumento) == FALSO){
         return EXIT_FAILURE;
     }
-
     estado = procesar_entrada( &msj );
-
 	if( estado != ST_OK ){
+/*si hubo un error la funcion elimina el vector , no hace falta un free*/
 		imprimir_error_entrada(estado);
 		return EXIT_SUCCESS;
 	}
+/*recordar qeu si todo sale bien , existe el vector , entonces */
+/* a partir de aca se debe liberar la memoria(cabeza.lista_instrucciones)antes de terminar el progrma*/
 	puts("Hasta aca todo bien");
-
-
     cabeza.index = 0;
     cabeza.acumulador = 0;
 /*
