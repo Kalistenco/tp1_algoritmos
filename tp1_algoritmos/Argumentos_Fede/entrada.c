@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "prueba.h"
+#include "entrada.h"
 #include "tipos.h"
 
 status_t_entrada procesar_entrada( struct mensajero * msj ){
