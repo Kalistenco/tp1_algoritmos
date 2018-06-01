@@ -22,11 +22,7 @@ int main(int argc , char * argv[]){
         return EXIT_FAILURE;
     }
 
-    estado = procesar_entrada_archivo( msj.cant_memoria ,
-								    msj.entrada_archivo_nombre ,
-								    &cabeza.lista_instrucciones ,
-								    msj.entrada_archivo ,
-								    msj.entrada_tipo );
+    estado = procesar_entrada( &msj );
 
 	if( estado != ST_OK ){
 		imprimir_error_entrada(estado);
@@ -37,8 +33,8 @@ int main(int argc , char * argv[]){
 
     cabeza.index = 0;
     cabeza.acumulador = 0;
-
-    /*Probe al archivo resta */
+/*
+    Probe al archivo resta
     cabeza.lista_instrucciones[0] = 1009;
     cabeza.lista_instrucciones[1] = 1010;
     cabeza.lista_instrucciones[2] = 2009;
@@ -51,7 +47,7 @@ int main(int argc , char * argv[]){
     cabeza.lista_instrucciones[9] = 0000;
     cabeza.lista_instrucciones[10] = 0000;
     cabeza.lista_instrucciones[11] = 0000;
-
+*/
     error_operacion = ejecutar_instrucciones(msj.cant_memoria);
     if(errores_instrucciones(error_operacion) == FALSO){
         return EXIT_FAILURE;
