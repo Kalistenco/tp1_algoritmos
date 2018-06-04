@@ -180,7 +180,12 @@ status_op_t leer( int posicion_asignada ){
     if( !fgets(numero_ingresado , MAX_CANT_INGRESO_STDIN , stdin) ){
 		return NO_SE_PUDO_LEER_VALOR;
     }
-
+/*como ingrsa por stdin le borro el \n para no tener problemas mas adelante*/
+	ptr_aux = strchr( numero_ingresado , '\n' );
+/* si lo en cuentra , es decir no retorna NULL , entonces le pone el \0*/
+	if( ptr_aux ){
+		*ptr_aux = '\0';
+	}
     /*Si no ingresa numeros, devuelve error */
     num_convertido = strtol( numero_ingresado,&ptr_aux,10 );
 
