@@ -13,10 +13,11 @@
 #define MSJ_ERROR_ABRIR_ARCHIVO "No se pudo abrir el archivo"
 #define MSJ_ERROR_NO_MEMORIA "No hay mas memoria"
 #define MSJ_ERROR_CERRAR_ARCHIVO "No se pudo cerrar el archivo correctamente"
-/*#define MSJ_ERROR_VECTOR_INCOMPLETO "El vector esta incompleto"*/
 #define MSJ_ERROR_LEER_CONSOLA "No se pudo leer desde consola"
 #define MSJ_ERROR_PALABRA_FUERA_DE_RANGO "La palabra esta fuera de rango"
 #define MSJ_ERROR_VECTOR_VACIO "No ingreso nada , el vector esta vacio"
+
+#define FORMATO_PREFIJO_INGRESO "%2lu  :?"
 
 #define MAX_CANT_INGRESO 126
 #define MAX_LARGO_PALABRA 5

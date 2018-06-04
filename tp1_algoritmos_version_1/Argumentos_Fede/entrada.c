@@ -4,24 +4,6 @@
 #include "entrada.h"
 #include "tipos.h"
 
-/*
-#include "argumentos.h"
-esto solo para probar el programa
-int main(void){
-	struct mensajero msj;
-	status_t_entrada estado;
-	inicializar_mensajero( &msj);
-	estado = procesar_entrada( &msj );
-	free(cabeza.lista_instrucciones);
-	if( estado != ST_OK ){
-		return EXIT_FAILURE;
-	}
-
-return EXIT_SUCCESS;
-}
-
-*/
-
 status_t_entrada procesar_entrada( struct mensajero * msj ){
 
 	FILE * archivo;
@@ -37,32 +19,31 @@ status_t_entrada procesar_entrada( struct mensajero * msj ){
 		return ST_PUNTERO_NULO;
 	}
 
-
 /*creo una variable auxiliar para no desreferenciar un puntero varias veces*/
 	cant_memoria_aux = msj -> cant_memoria;
-
 /*se crea el vector donde guardara las palabras convertidas*/
 	vtr_palabras_convertidas_aux = (int*)calloc( cant_memoria_aux,sizeof(int) );
 	if( !vtr_palabras_convertidas_aux ){
 		return ST_ERROR_NO_MEMORIA;
 	}
 
-/*caso donde se lee por stdin*/
+/********CASO CUANDO SE LEE POR STDIN********/
 	if( msj -> entrada_archivo == FALSO ){
+
 		var_posc = 0;
 		while( var_posc < cant_memoria_aux ){
-/********poner el formato en una cadena************/
-			 printf("%2lu  :?",var_posc );
+			 printf(FORMATO_PREFIJO_INGRESO,var_posc );
 			if( !fgets( cadena_ingreso , MAX_CANT_INGRESO , stdin )){
 /*no pudo leer por consola*/
-				/*puts();*/
 				estado = ST_ERROR_LEER_CONSOLA;
 				break;
 			}
 			estado = convertir_palabra_str_int( cadena_ingreso,&palabra_convertida_aux );
+/*pregunta si ingreso la palabra para terminar decargar los datos
 			if( estado == ST_FIN_INGRESO ){
 				break;
 			}
+			 */
 			if( estado == ST_OK ){
 /*si pudo convertir la palabra a un entero lo guarda en el vector*/
 				vtr_palabras_convertidas_aux[var_posc] = palabra_convertida_aux;
@@ -78,14 +59,16 @@ status_t_entrada procesar_entrada( struct mensajero * msj ){
 			}
 		}
 	}
-/*si se lee de un archivo*/
+/*********SI SE LEE DESDE UN ARCHIVO*********/
 	else{
+/********* SI SE LEE DESDE UN ARCHIVO DE TEXTO ********/
 		if( ( msj -> entrada_tipo ) == TXT ){
 			archivo = fopen(msj -> entrada_archivo_nombre ,"r");
 			if( !archivo ){
 				free(vtr_palabras_convertidas_aux);
 				return ST_ERROR_ABRIR_ARCHIVO;
 			}
+
 			var_posc = 0;
 			while( var_posc < cant_memoria_aux ){
 				if( !fgets( cadena_ingreso,MAX_CANT_INGRESO,archivo )){
@@ -102,10 +85,11 @@ status_t_entrada procesar_entrada( struct mensajero * msj ){
 					}
 				}
 				estado = convertir_palabra_str_int( cadena_ingreso,&palabra_convertida_aux );
-/*si se detecta el fin de ingreso , este valor no se carga y termina la carga*/
+/*si se detecta el fin de ingreso , este valor no se carga y termina la carga
 				if( estado == ST_FIN_INGRESO ){
 					break;
 				}
+*/
 				if( estado == ST_OK ){
 /*si pudo convertir la palabra a un entero y no fue el valor de salir lo guarda en el vector*/
 					vtr_palabras_convertidas_aux[var_posc] = palabra_convertida_aux;
@@ -121,6 +105,7 @@ status_t_entrada procesar_entrada( struct mensajero * msj ){
 				}
 			}
 		}
+/********* SI SE LEE DESDE UN ARCHIVO BINARIO ********/
 		else if ( (msj -> entrada_tipo) == BIN ){
 			archivo = fopen(msj -> entrada_archivo_nombre ,"rb");
 			if( !archivo ){
@@ -128,6 +113,7 @@ status_t_entrada procesar_entrada( struct mensajero * msj ){
 				return ST_ERROR_ABRIR_ARCHIVO;
 			}
 			var_posc = 0;
+/*lee un entero por vez hasta que no tenga que leer y fread devuelva cero*/
 			while( fread( &palabra_convertida_aux , sizeof(int) , 1 , archivo) ){
 				if( palabra_convertida_aux == PALABRA_FIN_INGRESO ){
 					estado = ST_FIN_INGRESO;
@@ -138,6 +124,7 @@ status_t_entrada procesar_entrada( struct mensajero * msj ){
 					estado = ST_ERROR_PALABRA_FUERA_DE_RANGO;
 					break;
 				}
+/*si la palabra esta en rango y no es la que indica salir*/
 				vtr_palabras_convertidas_aux[var_posc] = palabra_convertida_aux;
 				var_posc++;
 			}
@@ -246,7 +233,7 @@ status_t_entrada convertir_palabra_str_int( char * cadena_ingreso , int * palabr
 /*es por que se encontro con un \0 en la posicion MAX_LARGO....*/
 				else if( var_aux == MAX_LARGO_PALABRA ){
 /*cierro la cadena con ese \0*/
-					cadena_palabra[var_aux] = cadena_ingreso[var_posc];
+					cadena_palabra[var_aux] = cadena_ingreso[var_posc + 1];
 				}
 /*de no pasar los casos anteriores , entonces solo pudo leer menos caracteres que el MAX_LARGO...*/
 				else{
@@ -279,7 +266,7 @@ status_t_entrada convertir_palabra_str_int( char * cadena_ingreso , int * palabr
 /*es por que se encontro con un \0 en la posicion MAX_LARGO....*/
 				else if( var_aux == MAX_LARGO_PALABRA_FIN ){
 /*cierro la cadena con ese \0*/
-					cadena_palabra[var_aux] = cadena_ingreso[var_posc];
+					cadena_palabra[var_aux] = cadena_ingreso[var_posc + 1];
 				}
 /*de no pasar los casos anteriores , entonces solo pudo leer menos caracteres que el MAX_LARGO...*/
 				else{
