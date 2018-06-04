@@ -1,26 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "entrada.h"
+#include "prueba.h"
 #include "tipos.h"
-
-/*
-#include "argumentos.h"
-esto solo para probar el programa
-int main(void){
-	struct mensajero msj;
-	status_t_entrada estado;
-	inicializar_mensajero( &msj);
-	estado = procesar_entrada( &msj );
-	free(cabeza.lista_instrucciones);
-	if( estado != ST_OK ){
-		return EXIT_FAILURE;
-	}
-
-return EXIT_SUCCESS;
-}
-
-*/
 
 status_t_entrada procesar_entrada( struct mensajero * msj ){
 
