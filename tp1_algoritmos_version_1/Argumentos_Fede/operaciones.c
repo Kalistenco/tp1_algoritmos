@@ -337,19 +337,3 @@ void djnz(int posicion_asignada){
     }
 	return;
 }
-/*
-void prueba(int codigo, int posicion_asignada){
-    int i;
-    printf("******************************************\n");
-    printf("\nIndex : %i\n", (int) cabeza.index);
-    printf("Codigo : %i \n", codigo);
-    printf("Acumulador : %i\n",cabeza.acumulador);
-    printf("Posicion de memoria a acceder : %i \n", posicion_asignada);
-    printf("Que hay en esa memoria : %i \n", cabeza.lista_instrucciones[posicion_asignada]);
-    printf("******************************************\n");
-    for(i = 0; i < 12 ; i++){
-        printf("%i : %i \n", i , cabeza.lista_instrucciones[i]);
-    }
-    printf("******************************************\n");
-}
-*/

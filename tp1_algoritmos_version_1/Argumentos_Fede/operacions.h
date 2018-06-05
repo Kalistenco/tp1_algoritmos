@@ -91,6 +91,4 @@ void jmpzero(int posicion_asignada);
 void jnz(int posicion_asignada);
 void djnz(int posicion_asignada);
 
-/*void prueba(int codigo, int posicion_asignada);*/
-
 #endif
