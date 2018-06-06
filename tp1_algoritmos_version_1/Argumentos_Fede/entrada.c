@@ -115,6 +115,10 @@ status_t_entrada procesar_entrada( struct mensajero * msj ){
 			var_posc = 0;
 /*lee un entero por vez hasta que no tenga que leer y fread devuelva cero*/
 			while( fread( &palabra_convertida_aux , sizeof(int) , 1 , archivo) ){
+				if( var_posc == cant_memoria_aux ){
+					estado = ST_FIN_INGRESO;
+					break;
+				}
 				if( palabra_convertida_aux == PALABRA_FIN_INGRESO ){
 					estado = ST_FIN_INGRESO;
 					break;
@@ -212,12 +216,12 @@ status_t_entrada convertir_palabra_str_int( char * cadena_ingreso , int * palabr
 				cadena_palabra[0] = caracter_aux;
 				for( var_aux = 1 ;
 /*leo el siguiente caracter despues del + , y se guardo en un vector*/
-/*se lee MAX_LARGO_PALABRA(4) caracteres + 1 por el igual */
+/*se lee MAX_LARGO_PALABRA(5) caracteres + 1 por el igual */
 					 cadena_ingreso[var_posc + 1] != '\0' &&var_aux <= MAX_LARGO_PALABRA;
 					 var_aux++ , var_posc++){
 					cadena_palabra[var_aux] = cadena_ingreso[var_posc + 1];
 				}
-/*si carga la cadena con MAX_LAR....(4) caracteres + 1 */
+/*si carga la cadena con MAX_LAR....(5) caracteres + 1 */
 				if( var_aux == MAX_LARGO_PALABRA + 1 ){
 /*entonces en la ultima POSICION del vector debe hacer un caracter valido ,es decir un espacio o \0 */
 					caracter_aux = cadena_palabra[var_aux - 1];
@@ -245,12 +249,12 @@ status_t_entrada convertir_palabra_str_int( char * cadena_ingreso , int * palabr
 				cadena_palabra[0] = caracter_aux;
 				for( var_aux = 1 ;
 /*leo el siguiente caracter despues del - , y se guardo en un vector*/
-/*se lee MAX_LARGO_PALABRA_FIN(5) caracteres + 2 por el igual y el signo */
+/*se lee MAX_LARGO_PALABRA_FIN(6) caracteres + 2 por el igual y el signo */
 					 cadena_ingreso[var_posc + 1] != '\0' &&var_aux <= MAX_LARGO_PALABRA_FIN ;
 					 var_aux++ , var_posc++ ){
 					cadena_palabra[var_aux] = cadena_ingreso[var_posc + 1];
 				}
-/*si carga la cadena con MAX_LAR....(5) caracteres + 1 */
+/*si carga la cadena con MAX_LAR....(6) caracteres + 1 */
 				if( var_aux == MAX_LARGO_PALABRA_FIN + 1 ){
 /*entonces en la ultima POSICION del vector debe hacer un caracter valido ,es decir un espacio o \0 */
 					caracter_aux = cadena_palabra[var_aux - 1];
@@ -262,7 +266,7 @@ status_t_entrada convertir_palabra_str_int( char * cadena_ingreso , int * palabr
 					cadena_palabra[var_aux - 1] = '\0';
 					}
 				}
-/*si carga la cadena con MAX_LARGO...(4) caracteres */
+/*si carga la cadena con MAX_LARGO...(6) caracteres */
 /*es por que se encontro con un \0 en la posicion MAX_LARGO....*/
 				else if( var_aux == MAX_LARGO_PALABRA_FIN ){
 /*cierro la cadena con ese \0*/
